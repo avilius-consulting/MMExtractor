@@ -5,20 +5,24 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"MME/internal/repository"
 	"MME/internal/service"
 )
 
 func main() {
 	port := ":8080"
-	fmt.Printf("🚀 Microservice booting up on port %s...\n", port)
+	
+	// For testing, change this to your actual downstream API endpoint (e.g., a mock receiver or a database hook)
+	downstreamURL := "https://httpbin.org/post" 
 
-	// Initialize dependencies
+	fmt.Printf("🚀 Microservice booting up. Forwarding data to: %s\n", downstreamURL)
+
+	// Dependency Injection
 	extractor := service.NewExtractorService()
-	handler := service.NewHttpHandler(extractor)
+	dsClient := repository.NewDownstreamClient(downstreamURL)
+	handler := service.NewHttpHandler(extractor, dsClient)
 
-	// Define routes
 	http.HandleFunc("/extract", handler.ExtractHandler)
 
-	// Start the server
 	log.Fatal(http.ListenAndServe(port, nil))
 }
