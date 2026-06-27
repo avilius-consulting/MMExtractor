@@ -4,7 +4,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"my-microservice/internal/service"
+	"MME/internal/service"
 )
 
 func main() {
